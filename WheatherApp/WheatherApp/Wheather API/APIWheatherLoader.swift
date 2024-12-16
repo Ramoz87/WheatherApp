@@ -13,10 +13,11 @@ final public class APIWheatherLoader: WheatherLoader {
     private let apiKey = "c2cde0a947254c0a80e154736241512"
     
     public enum Error: Swift.Error {
-        case decoding(error: DecodingError)
-        case invalidResponse(statusCode: Int)
+        case invalidResponse
         case network(error: URLError)
-        case other(error: Swift.Error)
+        case decoding(error: DecodingError)
+        case server(error: ResponseError)
+        case undefined(error: Swift.Error)
     }
     
     public init(client: HTTPClient) {
@@ -33,10 +34,12 @@ final public class APIWheatherLoader: WheatherLoader {
             throw Error.network(error: error)
         } catch let error as DecodingError {
             throw Error.decoding(error: error)
-        }  catch let error as Error {
+        } catch let error as ResponseError {
+            throw Error.server(error: error)
+        } catch let error as Error {
             throw error
         } catch {
-            throw Error.other(error: error)
+            throw Error.undefined(error: error)
         }
     }
     

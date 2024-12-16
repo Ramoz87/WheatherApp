@@ -42,11 +42,11 @@ struct ContentView: View {
         .alert(isPresented: .constant(modelData.alertError != nil),
                error: modelData.alertError,
                actions: { _ in
-            Button("OK", role: .cancel) {
+            Button("OK") {
                 modelData.alertError = nil
             }
         }, message: { error in
-            Text(error.errorDescription ?? "Error")
+            Text(error.failureReason ?? "Try again later.")
         })
         .task {
             await modelData.update()
@@ -63,10 +63,6 @@ struct NoDataView: View {
                 .font(.system(size: 15, weight: .semibold))
         }
     }
-}
-
-#Preview {
-    ContentView()
 }
 
 

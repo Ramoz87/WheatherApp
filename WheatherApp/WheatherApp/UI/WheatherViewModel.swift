@@ -21,28 +21,19 @@ final class WheatherViewModel {
         case search(CityWheather?)
     }
     
-    struct Error: LocalizedError {
-        private let internalError: LocalizedError
-        
+    enum Error: LocalizedError {
+        case undefined
+        case data(LocalizedError)
+      
         var errorDescription: String? {
-            internalError.errorDescription
+            "Error"
         }
+       
         var failureReason: String? {
-            internalError.failureReason
-        }
-        
-        init(_ error: Swift.Error) {
-            if let localizedError = error as? LocalizedError {
-                internalError = localizedError
-            } else {
-                internalError = UnexpectedError()
+            switch self {
+            case .undefined: return "Undefined Error"
+            case let .data(error): return error.failureReason
             }
-        }
-    }
-    
-    private struct UnexpectedError: LocalizedError {
-        var errorDescription: String? {
-            "Unexpected Error"
         }
     }
     
@@ -67,8 +58,22 @@ final class WheatherViewModel {
             } else {
                 state = .noCity
             }
+        } catch let error as LocalizedError{
+            alertError = .data(error)
         } catch {
-            alertError = Error(error)
+            alertError = .undefined
+        }
+    }
+}
+
+extension APIWheatherLoader.Error: LocalizedError {
+    public var failureReason: String? {
+        switch self {
+        case let .server(error): return error.message
+        case .invalidResponse: return "Invalid response"
+        case let .network(error): return error.localizedDescription
+        case let .decoding(error): return error.localizedDescription
+        case let .undefined(error): return error.localizedDescription
         }
     }
 }
