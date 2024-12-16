@@ -8,39 +8,44 @@
 import Foundation
 
 struct CityWheatherViewModel {
-    let city: String
-    let temperature: String
-    let feelsLikeTemperature: String
-    let humidity: String
-    let uvIndex: String
-    let imageUrl: URL?
+    private let wheather: CityWheather
     
     init(_ wheather: CityWheather) {
-        self.city = wheather.city
-        self.imageUrl = wheather.conditionImageUrl
-        
+        self.wheather = wheather
+    }
+    
+    var city: String {
+        wheather.city
+    }
+    var imageUrl: URL? {
+        wheather.conditionImageUrl
+    }
+    var temperature: String {
         if let value = wheather.temperature {
-            self.temperature = String(Int(value)) + "°"
+            return "\(Int(value))°"
         } else {
-            self.temperature = ""
+            return ""
         }
-        
+    }
+    var feelsLikeTemperature: String {
         if let value = wheather.feelsLikeTemperature {
-            self.feelsLikeTemperature = String(Int(value)) + "°"
+            return "\(Int(value))°"
         } else {
-            self.feelsLikeTemperature = ""
+            return ""
         }
-        
+    }
+    var humidity: String {
         if let value = wheather.humidity {
-            self.humidity = String(Int(value)) + "%"
+            return "\(Int(value))%"
         } else {
-            self.humidity = ""
+            return ""
         }
-        
+    }
+    var uvIndex: String {
         if let value = wheather.uvIndex {
-            self.uvIndex = String(Int(value))
+            return String(Int(value))
         } else {
-            self.uvIndex = ""
+            return ""
         }
     }
 }
