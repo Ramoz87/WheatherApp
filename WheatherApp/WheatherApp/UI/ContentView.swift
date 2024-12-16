@@ -13,18 +13,26 @@ struct ContentView: View {
     var body: some View {
         VStack {
             SearchView(text: $modelData.search)
+                .onSubmit {
+                    Task {
+                        await modelData.update()
+                    }
+                }
             
             switch modelData.state {
             case .noCity:
                 Spacer()
                 NoDataView()
             case .selected(let city):
-                CityWheatherView(wheather: city)
+                CityWheatherView(city)
                     .padding(.top, 80)
             case .search(let city):
                 if let city {
-                    CityWheatherCard(model: city)
+                    CityWheatherCard(city)
                         .padding(.top, 30)
+                        .onTapGesture {
+                            modelData.select(city: city)
+                        }
                 }
             }
             

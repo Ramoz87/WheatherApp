@@ -9,6 +9,7 @@ import Foundation
 @Observable
 final class WheatherViewModel {
     private let loader: WheatherLoader
+    private let repository: CityRepository
     
     var search: String = ""
     var state: State = .noCity
@@ -45,27 +46,38 @@ final class WheatherViewModel {
         }
     }
     
-    init(loader: WheatherLoader) {
+    init(loader: WheatherLoader, repository: CityRepository) {
         self.loader = loader
+        self.repository = repository
+    }
+    
+    func select(city: CityWheather) {
+        repository.save(city: city.city)
+        state = .selected(city)
     }
     
     func update() async {
         do {
-            if search.isEmpty { return }
-            let result = try await loader.load(city: search)
-            state = .selected(result)
+            if !search.isEmpty {
+                let result = try await loader.load(city: search)
+                state = .search(result)
+            } else if let city = repository.get() {
+                let result = try await loader.load(city: city)
+                state = .selected(result)
+            } else {
+                state = .noCity
+            }
         } catch {
             alertError = Error(error)
         }
     }
-    
-    //MARK: - Private
 }
 
 extension WheatherViewModel {
     static func create() -> WheatherViewModel {
         let client = URLSessionHTTPClient()
         let wheatherAPI = APIWheatherLoader(client: client)
-        return WheatherViewModel(loader: wheatherAPI)
+        let repository = UserDefaultsCityRepository()
+        return WheatherViewModel(loader: wheatherAPI, repository: repository)
     }
 }

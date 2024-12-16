@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct CityWheatherView: View {
-    var wheather: CityWheather
+    var model: CityWheather
+    
+    init(_ model: CityWheather) {
+        self.model = model
+    }
     
     var body: some View {
         VStack {
-            AsyncImage(url: wheather.conditionImageUrl) { phase in
+            AsyncImage(url: model.conditionImageUrl) { phase in
                 if case let .success(image) = phase {
                     image.resizable()
                 }
@@ -20,33 +24,33 @@ struct CityWheatherView: View {
             .frame(width: 128, height: 128)
             
             HStack {
-                Text(wheather.city)
+                Text(model.city)
                     .font(.system(size: 30, weight: .semibold))
                 Image("vector")
             }
             
             HStack(alignment: .top) {
-                Text(String(wheather.temperature!))
+                Text(String(model.temperature!))
                     .font(.system(size: 70, weight: .semibold))
                 Text("°")
                     .font(.system(size: 35))
             }
             
-            WheatherValuesView(wheather: wheather)
+            WheatherValuesView(model: model)
         }
     }
 }
 
 struct WheatherValuesView: View {
-    var wheather: CityWheather
+    var model: CityWheather
     
     var body: some View {
         HStack {
-            ValueView(text: "Humidity", value: String(wheather.humidity!))
+            ValueView(text: "Humidity", value: String(model.humidity!))
             Spacer()
-            ValueView(text: "UV", value: String(wheather.uvIndex!))
+            ValueView(text: "UV", value: String(model.uvIndex!))
             Spacer()
-            ValueView(text: "Feels like", value: String(wheather.feelsLikeTemperature!))
+            ValueView(text: "Feels like", value: String(model.feelsLikeTemperature!))
         }
         .frame(width: 274, height: 75)
         .background(Color.searchBar)

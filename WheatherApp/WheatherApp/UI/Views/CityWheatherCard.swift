@@ -10,6 +10,10 @@ import SwiftUI
 struct CityWheatherCard: View {
     var model: CityWheather
     
+    init(_ model: CityWheather) {
+        self.model = model
+    }
+    
     var body: some View {
         HStack(alignment: .center) {
             VStack {
