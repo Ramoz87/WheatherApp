@@ -24,18 +24,17 @@ struct ContentView: View {
                 Spacer()
                 NoDataView()
             case .selected(let city):
-                CityWheatherView(city)
+                CityWheatherView(.init(city))
                     .padding(.top, 80)
             case .search(let city):
                 if let city {
-                    CityWheatherCard(city)
+                    CityWheatherCard(.init(city))
                         .padding(.top, 30)
                         .onTapGesture {
                             modelData.select(city: city)
                         }
                 }
             }
-            
             Spacer()
         }
         .padding()

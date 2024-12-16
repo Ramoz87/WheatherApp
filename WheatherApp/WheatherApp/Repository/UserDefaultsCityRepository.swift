@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserDefaultsCityRepository: CityRepository {
+struct UserDefaultsCityRepository: CityGetProtocol, CitySaveProtocol {
     
     private let key: String = "city"
     private let userDefaults: UserDefaults

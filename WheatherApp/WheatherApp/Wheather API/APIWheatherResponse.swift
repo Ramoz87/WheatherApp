@@ -17,12 +17,17 @@ internal struct Response: Decodable {
             return nil
         }
         
+        let prefix = "https:"
+        var iconUrl = current.condition.icon
+        if !iconUrl.hasPrefix(prefix) {
+            iconUrl = "\(prefix)\(iconUrl)"
+        }
         return .init(city: location.name,
                      temperature: current.temp_c,
                      feelsLikeTemperature: current.feelslike_c,
                      humidity: current.humidity,
                      uvIndex: current.uv,
-                     conditionImageUrl: URL(string: current.condition.icon)
+                     conditionImageUrl: URL(string: iconUrl)
         )
     }
 }
@@ -37,7 +42,6 @@ internal struct Wheather: Decodable {
     let humidity: Double
     let uv: Double
     let condition: Condition
-    
 }
 
 internal struct Condition: Decodable {

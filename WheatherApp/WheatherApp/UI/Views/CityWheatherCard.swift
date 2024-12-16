@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct CityWheatherCard: View {
-    var model: CityWheather
+    private let model: CityWheatherViewModel
     
-    init(_ model: CityWheather) {
+    init(_ model: CityWheatherViewModel) {
         self.model = model
     }
     
@@ -19,18 +19,14 @@ struct CityWheatherCard: View {
             VStack {
                 Text(model.city)
                     .font(.system(size: 20, weight: .semibold))
-                HStack(alignment: .top) {
-                    Text(String(model.temperature!))
-                        .font(.system(size: 60))
-                    Text("°")
-                        .font(.system(size: 30))
-                }
+                Text(model.temperature)
+                    .font(.system(size: 60))
             }
             Spacer()
-            AsyncImage(url: model.conditionImageUrl)
+            AsyncImage(url: model.imageUrl)
         }
         .padding()
-        .frame(width: .infinity, height: 117)
+        .frame(height: 117)
         .background(Color.searchBar)
         .cornerRadius(16)
     }

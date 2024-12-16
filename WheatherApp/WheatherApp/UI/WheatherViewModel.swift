@@ -8,6 +8,8 @@ import Foundation
 
 @Observable
 final class WheatherViewModel {
+    typealias CityRepository = CityGetProtocol & CitySaveProtocol
+    
     private let loader: WheatherLoader
     private let repository: CityRepository
     
