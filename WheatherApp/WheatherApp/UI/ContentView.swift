@@ -11,33 +11,36 @@ struct ContentView: View {
     @State private var modelData = WheatherViewModel.create()
     
     var body: some View {
-        VStack {
-            SearchView(text: $modelData.search)
-                .onSubmit {
-                    Task {
-                        await modelData.update()
+        GeometryReader { _ in
+            VStack {
+                SearchView(text: $modelData.search)
+                    .onSubmit {
+                        Task {
+                            await modelData.update()
+                        }
+                    }
+                
+                switch modelData.state {
+                case .noCity:
+                    Spacer()
+                    NoDataView()
+                case .selected(let city):
+                    CityWheatherView(.init(city))
+                        .padding(.top, 80)
+                case .search(let city):
+                    if let city {
+                        CityWheatherCard(.init(city))
+                            .padding(.top, 30)
+                            .onTapGesture {
+                                modelData.select(city: city)
+                            }
                     }
                 }
-            
-            switch modelData.state {
-            case .noCity:
                 Spacer()
-                NoDataView()
-            case .selected(let city):
-                CityWheatherView(.init(city))
-                    .padding(.top, 80)
-            case .search(let city):
-                if let city {
-                    CityWheatherCard(.init(city))
-                        .padding(.top, 30)
-                        .onTapGesture {
-                            modelData.select(city: city)
-                        }
-                }
             }
-            Spacer()
+            .padding()
         }
-        .padding()
+        .ignoresSafeArea(.keyboard)
         .alert(isPresented: .constant(modelData.alertError != nil),
                error: modelData.alertError,
                actions: { _ in
